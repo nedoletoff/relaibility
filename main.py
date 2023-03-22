@@ -43,9 +43,12 @@ for i, prob in enumerate(probs):
     paths = find_all_paths(g, start, end)
     for path in paths:
         pr_all[i] += pow(prob, len(path) - 1)
+with open("Pall.txt", "w") as f:
+    for i, prob in enumerate(probs):
+        print(f'probability = {prob}: probability decomposition ='
+              f' {decomposition(prob)}, probability brute force = {pr_all[i]}')
+        f.write(f'probability = {prob}: probability d ='
+                f' {decomposition(prob)}, probability bf = {pr_all[i]}\n')
 
-for i, prob in enumerate(probs):
-    print(f'probability = {prob}: probability decomposition ='
-          f' {decomposition(prob)}, probability brute force = {pr_all[i]}')
 
 plt.show()
