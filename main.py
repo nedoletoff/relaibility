@@ -24,6 +24,15 @@ def find_all_paths(graph, start_t, end_t, path=None):
     return paths
 
 
+def calculate_probability_paths(graph, start, end):
+    paths = find_all_paths(graph, start, end)
+    return [len(x) - 1 for x in paths]
+
+
+def calculate_probability_mutual_exclusivity(probs):
+    return sum([p * (1 - p) for p in probs])
+
+
 with open("edges.txt") as f:
     lines = f.readlines()
 
@@ -38,17 +47,16 @@ nx.draw(g, pos, with_labels=True, node_color="#f86e00")
 pr_all = [0] * 11
 
 print(start, end)
-probs = (0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
-for i, prob in enumerate(probs):
-    paths = find_all_paths(g, start, end)
-    for path in paths:
-        pr_all[i] += pow(prob, len(path) - 1)
+probability_list = (0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+for i, prob in enumerate(probability_list):
+    lens = calculate_probability_paths(g, start, end)
+    probs = [pow(prob, degree) for degree in lens]
+    pr_all[i] = calculate_probability_mutual_exclusivity(probs)
 with open("Pall.txt", "w") as f:
-    for i, prob in enumerate(probs):
+    for i, prob in enumerate(probability_list):
         print(f'probability = {prob}: probability decomposition ='
               f' {decomposition(prob)}, probability brute force = {pr_all[i]}')
         f.write(f'probability = {prob}: probability d ='
                 f' {decomposition(prob)}, probability bf = {pr_all[i]}\n')
-
 
 plt.show()
